@@ -4,11 +4,16 @@ load_dotenv()
 import json
 import os
 
+
+
 from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_core.messages import (AIMessage, HumanMessage, SystemMessage,
                                      ToolMessage)
 from langchain_openai import ChatOpenAI
+from langchain_tavily import TavilySearch
+
+
 from rich import box
 from rich import print as rprint
 from rich.console import Console
@@ -17,12 +22,11 @@ from rich.panel import Panel
 from rich.pretty import pprint
 from rich.table import Table
 from rich.text import Text
-from tavily import TavilyClient
+
 
 console = Console()
 
 
-tavily = TavilyClient()
 
 
 def display_agent_result(result):
@@ -150,10 +154,7 @@ def display_agent_result(result):
     console.print("\n[bold green]✓ AGENT EXECUTION COMPLETED[/bold green]\n")
 
 
-@tool
-def search(query: str) -> str:
-    """Searches the web for a query and returns the results."""
-    return tavily.search(query)
+
 
 
 llm = ChatOpenAI(
@@ -162,7 +163,7 @@ llm = ChatOpenAI(
     openai_api_key=os.environ.get("OPENAI_API_KEY"),
 )
 
-tools = [search]
+tools = [TavilySearch()]
 agent = create_agent(model=llm, tools=tools)
 
 result = agent.invoke(
