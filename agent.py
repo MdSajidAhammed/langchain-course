@@ -3,8 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import json
 import os
-
-
+from typing import List
 
 from langchain.agents import create_agent
 from langchain.tools import tool
@@ -12,8 +11,7 @@ from langchain_core.messages import (AIMessage, HumanMessage, SystemMessage,
                                      ToolMessage)
 from langchain_openai import ChatOpenAI
 from langchain_tavily import TavilySearch
-
-
+from pydantic import BaseModel, Field
 from rich import box
 from rich import print as rprint
 from rich.console import Console
@@ -23,10 +21,7 @@ from rich.pretty import pprint
 from rich.table import Table
 from rich.text import Text
 
-
 console = Console()
-
-
 
 
 def display_agent_result(result):
@@ -154,7 +149,20 @@ def display_agent_result(result):
     console.print("\n[bold green]✓ AGENT EXECUTION COMPLETED[/bold green]\n")
 
 
+class Source(BaseModel):
+    """Schema for a source used by a agent"""
 
+    url: str = Field(description="The URL of the Source")
+
+
+class AgentResponse(BaseModel):
+    """schema for agent response with answear and sources"""
+
+    answer: str = Field(description="The agent's answer to the query")
+    sources: List[Source] = Field(
+        default_factory=list,
+        description="The List of sources used ti generate the answer",
+    )
 
 
 llm = ChatOpenAI(
@@ -164,37 +172,25 @@ llm = ChatOpenAI(
 )
 
 tools = [TavilySearch()]
-agent = create_agent(model=llm, tools=tools)
+agent = create_agent(model=llm, tools=tools, response_format=AgentResponse)
 
 result = agent.invoke(
     {
         "messages": HumanMessage(
-            content="Search for 3 job posting for an ai engineer using langchain in the Bay area and list their details"
+            content="Tell me about most seductive women nation in the world"
         )
     }
 )
 
+
+
 display_agent_result(result)
+print(result)
 
-print("\n" * 50)
+# print("\n" * 50)
 
-pprint(result)
+# pprint(result)
 
-print("\n" * 50)
+# print("\n" * 50)
 
-rprint(result)
-
-
-
-
-
-# for message in result["messages"]:
-
-#     if isinstance(message, AIMessage):
-#         print(message.content)
-
-# for message in result["messages"]:
-
-#     print("Type:", type(message).__name__)
-#     print("Content:", message.content)
-#     print("-" * 40)
+# rprint(result)
