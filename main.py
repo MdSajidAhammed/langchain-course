@@ -27,8 +27,7 @@ Musk is a supporter of global far-right politics, figures, and political parties
     2.The interesting facts about them. 
     """
     summary_prompt_templete = PromptTemplate(
-        input_variables=["imformation"], 
-        template=summary_templete
+        input_variables=["imformation"], template=summary_templete
     )
 
     llm = ChatOpenAI(
