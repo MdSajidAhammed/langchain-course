@@ -1,16 +1,13 @@
-from dotenv import load_dotenv
-import os
 import json
+import os
 
+from dotenv import load_dotenv
 
 load_dotenv()
 
 
-from openai import OpenAI 
 from langsmith import traceable
-
-
-
+from openai import OpenAI
 
 MAX_ITERATIONS = 10
 MODEL = "gpt-4o-mini"
@@ -30,12 +27,12 @@ tools = [
             "properties": {
                 "product": {
                     "type": "string",
-                    "description": "The name of the product to look up"
+                    "description": "The name of the product to look up",
                 }
             },
             "required": ["product"],
-            "additionalProperties": False
-        }
+            "additionalProperties": False,
+        },
     },
     {
         "type": "function",
@@ -44,18 +41,15 @@ tools = [
         "parameters": {
             "type": "object",
             "properties": {
-                "price": {
-                    "type": "number",
-                    "description": "The original price"
-                },
+                "price": {"type": "number", "description": "The original price"},
                 "discount_tier": {
                     "type": "string",
-                    "description": "The discount tier to apply"
-                }
+                    "description": "The discount tier to apply",
+                },
             },
-            "required": ["price", "discount_tier"]
-        }
-    }
+            "required": ["price", "discount_tier"],
+        },
+    },
 ]
 
 
@@ -76,17 +70,22 @@ def apply_discount(price: float, discount_tier: str) -> float:
     discount = discount_percentages.get(discount_tier, 0)
     return round(price * (1 - discount / 100), 2)
 
+
 input_messages = [
-    {"role": "system", "content": (
-        "You are a helpful assistant that can answer questions about product prices and apply discounts. "
-    )}
+    {
+        "role": "system",
+        "content": (
+            "You are a helpful assistant that can answer questions about product prices and apply discounts. "
+        ),
+    }
 ]
 
-@traceable(name="init_chat_model")
-def init_chat_model(model_name: str, temperature: float = 0.0): 
 
+@traceable(name="init_chat_model")
+def init_chat_model(model_name: str, temperature: float = 0.0):
     """Initialize a chat model with the given name and temperature"""
     return client.chat(model_name=model_name, temperature=temperature, client=client)
+
 
 # @traceable(name="langchain agent loop")
 # def run_agent(question: str):
