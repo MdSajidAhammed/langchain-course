@@ -10,7 +10,7 @@ from pinecone import Pinecone, ServerlessSpec
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-
+from langchain_pinecone import PineconeVectorStore
 
 load_dotenv()
 
@@ -48,3 +48,6 @@ if __name__ == "__main__":
     chunks = text_splitter.split_documents(documents=docs)
     print(len(chunks))
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+
+    PineconeVectorStore.from_documents(documents=chunks, embedding=embeddings, index_name = os.environ['INDEX_NAME'])
+    print("finish")  
