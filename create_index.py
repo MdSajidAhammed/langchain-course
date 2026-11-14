@@ -2,6 +2,9 @@ import os
 
 from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec
+from langchain_core.documents import Document
+from langchain_community.document_loaders import PyPDFLoader
+
 
 load_dotenv()
 
@@ -21,3 +24,8 @@ if __name__ == "__main__":
         spec=ServerlessSpec(cloud="aws", region="us-east-1"),
     )
     print(f"Index '{index_name}' created")
+
+    loader = PyPDFLoader(r"C:\Users\WALTON\Desktop\langchain-course\mediumblog1.txt")
+    docs = loader.load()
+    print(docs[0].page_content[:200])
+    print(docs[0].metadata)
