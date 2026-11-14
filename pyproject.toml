@@ -15,6 +15,7 @@ dependencies = [
     "langchain-tavily>=0.2.18",
     "langsmith>=0.14.12",
     "openai>=3.37.0",
+    "pinecone>=10.3.0",
     "python-dotenv>=1.2.4",
     "rich>=15.0.0",
     "tavily-python>=0.8.5",
