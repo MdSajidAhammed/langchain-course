@@ -8,7 +8,9 @@ from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec
 from langchain_core.documents import Document
 from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter, CharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+
 
 load_dotenv()
 
@@ -32,9 +34,11 @@ if __name__ == "__main__":
     loader = TextLoader(r"C:\Users\WALTON\Desktop\langchain-course\mediumblog1.txt")
     docs = loader.load()
 
-    text_splitter = RecursiveCharacterTextSplitter(
+    text_splitter = CharacterTextSplitter(
         chunk_size = 100,
         chunk_overlap = 20,
+        separator="\n\n",
+        length_function = len
     )
 
     chunks = text_splitter.split_documents(documents=docs)
