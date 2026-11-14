@@ -6,7 +6,7 @@ import os
 
 from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec
-from langchain_core.documents import Document
+
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
@@ -14,7 +14,7 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 
 load_dotenv()
 
-if __name__ == "__main__":
+def pinecone_loader():
     pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
     index_name = os.environ["INDEX_NAME"]
 
@@ -31,6 +31,10 @@ if __name__ == "__main__":
     )
     print(f"Index '{index_name}' created")
 
+
+
+if __name__ == "__main__":
+
     loader = TextLoader(r"C:\Users\WALTON\Desktop\langchain-course\mediumblog1.txt")
     docs = loader.load()
 
@@ -43,3 +47,4 @@ if __name__ == "__main__":
 
     chunks = text_splitter.split_documents(documents=docs)
     print(len(chunks))
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
