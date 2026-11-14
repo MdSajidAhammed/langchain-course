@@ -1,10 +1,14 @@
+import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 import os
 
 from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec
 from langchain_core.documents import Document
-from langchain_community.document_loaders import PyPDFLoader
-
+from langchain_community.document_loaders import TextLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 load_dotenv()
 
@@ -25,7 +29,13 @@ if __name__ == "__main__":
     )
     print(f"Index '{index_name}' created")
 
-    loader = PyPDFLoader(r"C:\Users\WALTON\Desktop\langchain-course\mediumblog1.txt")
+    loader = TextLoader(r"C:\Users\WALTON\Desktop\langchain-course\mediumblog1.txt")
     docs = loader.load()
-    print(docs[0].page_content[:200])
-    print(docs[0].metadata)
+
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size = 100,
+        chunk_overlap = 20,
+    )
+
+    chunks = text_splitter.split_documents(documents=docs)
+    print(len(chunks))
